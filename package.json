@@ -16,7 +16,7 @@
     "start-server": "cross-env TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 nodemon src/www.js",
     "start-server-no-dir": "cross-env TRILIUM_SAFE_MODE=1 TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 nodemon src/www.js",
     "qstart-server": "npm run qswitch-server && TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 nodemon src/www.js",
-    "start-electron": "cross-env TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev electron --inspect=5858 .",
+    "start-electron": "cross-env TRILIUM_PORT=37740 TRILIUM_DATA_DIR=./data TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev electron --inspect=5858 .",
     "start-electron-no-dir": "cross-env TRILIUM_SAFE_MODE=1 TRILIUM_ENV=dev TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 electron --inspect=5858 .",
     "qstart-electron": "npm run qswitch-electron && TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev electron --inspect=5858 .",
     "start-test-server": "npm run qswitch-server; rm -rf ./data-test; cross-env TRILIUM_SAFE_MODE=1 TRILIUM_DATA_DIR=./data-test TRILIUM_SYNC_SERVER_HOST=http://tsyncserver:4000 TRILIUM_ENV=dev TRILIUM_PORT=9999 node src/www.js",
