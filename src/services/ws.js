@@ -11,8 +11,22 @@ const AbstractBeccaEntity = require('../becca/entities/abstract_becca_entity.js'
 
 const env = require('./env.js');
 if (env.isDev()) {
+
+    // Nriver: simple debounce implementationto replace debounce@3.0.0
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
     const chokidar = require('chokidar');
-    const debounce = require('debounce');
+
     const debouncedReloadFrontend = debounce(() => reloadFrontend("source code change"), 200);
     chokidar
         .watch('src/public')
