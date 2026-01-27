@@ -227,7 +227,7 @@ function hasConnectingRelation(sourceNote, targetNote) {
         && attr.value === targetNote.noteId);
 }
 
-async function findSimilarNotes(noteId) {
+function findSimilarNotes(noteId) {
     const results = [];
     let i = 0;
 
@@ -421,7 +421,7 @@ async function findSimilarNotes(noteId) {
         i++;
 
         if (i % 1000 === 0) {
-            await setImmediatePromise();
+            setImmediate(() => {});
         }
     }
 
