@@ -154,22 +154,47 @@ function setExpanded(req) {
 }
 
 function setExpandedForSubtree(req) {
-    const {branchId} = req.params;
+    const { branchId } = req.params;
     const expanded = parseInt(req.params.expanded);
+
+    // Find branches to update: those whose current state != target state
+    const currentExpandedWeWantToChange = 1 - expanded;
+
+    // Maximum depth limit (only applied when expanded = 1)
+    const maxDepth = expanded === 1 ? 4 : 9999;  // When collapsing, basically no limit (or set a very large value)
 
     let branchIds = sql.getColumn(`
         WITH RECURSIVE
-        tree(branchId, noteId) AS (
-            SELECT branchId, noteId FROM branches WHERE branchId = ?
-            UNION
-            SELECT branches.branchId, branches.noteId FROM branches
-                JOIN tree ON branches.parentNoteId = tree.noteId
-            WHERE branches.isDeleted = 0
-        )
-        SELECT branchId FROM tree`, [branchId]);
+            tree(branchId, noteId, depth) AS (
+                -- Anchor: starting node (depth 0)
+                SELECT branchId, noteId, 0
+                FROM branches
+                WHERE branchId = ?
 
-    // root is always expanded
-    branchIds = branchIds.filter(branchId => branchId !== 'none_root');
+                UNION ALL
+
+                -- Recursive part
+                SELECT
+                    b.branchId,
+                    b.noteId,
+                    t.depth + 1
+                FROM branches b
+                         JOIN tree t ON b.parentNoteId = t.noteId
+                WHERE b.isDeleted = 0
+                  AND b.isExpanded = ?
+                  AND t.depth < ?          -- Depth restriction (< maxDepth)
+            )
+        SELECT branchId
+        FROM tree
+        WHERE depth <= ?               -- Include depth 0, up to maxDepth
+          AND branchId != 'none_root'  -- Exclude special 'none_root' if it exists
+    `, [branchId, currentExpandedWeWantToChange, maxDepth, maxDepth]);
+
+    branchIds = branchIds.filter(id => id !== 'none_root');
+
+    if (branchIds.length === 0) {
+        return { branchIds: [], updatedCount: 0 };
+    }
 
     sql.executeMany(`UPDATE branches SET isExpanded = ${expanded} WHERE branchId IN (???)`, branchIds);
 
