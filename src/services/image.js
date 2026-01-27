@@ -9,7 +9,8 @@ const sql = require('./sql.js');
 const jimp = require('jimp');
 const imageType = require('image-type');
 const sanitizeFilename = require('sanitize-filename');
-const isSvg = require('is-svg');
+const isSvgModule = require('is-svg');
+const isSvg = isSvgModule.default;
 const isAnimated = require('is-animated');
 const htmlSanitizer = require('./html_sanitizer.js');
 
@@ -45,10 +46,15 @@ async function processImage(uploadBuffer, originalName, shrinkImageSwitch) {
 }
 
 function getImageType(buffer) {
-    if (isSvg(buffer)) {
-        return {
-            ext: 'svg'
-        }
+    let isSvgResult = false;
+    try {
+        const svgString = buffer.toString('utf8');
+        isSvgResult = isSvg(svgString);
+    } catch (err) {
+        log.info('Buffer is not valid UTF-8, skipping SVG check:', err.message);
+    }
+    if (isSvgResult) {
+        return { ext: 'svg' };
     }
     else {
         return imageType(buffer) || {
