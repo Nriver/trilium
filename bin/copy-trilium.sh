@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+node -v
+
 if [[ $# -eq 0 ]] ; then
     echo "Missing argument of target directory"
     exit 1
@@ -9,7 +11,7 @@ if ! [[ $(which npm) ]]; then
     exit 1
 fi
 
-n exec 18.18.2 npm run webpack || npm run webpack
+npm run webpack
 
 DIR="$1"
 
@@ -27,7 +29,7 @@ done
 cp webpack-* "$DIR"/      # here warning because there is no 'webpack-*', but webpack.config.js only
 
 # run in subshell (so we return to original dir)
-(cd $DIR && n exec 18.18.2 npm install --only=prod)
+(cd $DIR && nvm use 24.13.0 && npm install --only=prod)
 
 if [[ -d "$DIR"/node_modules ]]; then
 # cleanup of useless files in dependencies

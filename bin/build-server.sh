@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PKG_DIR=dist/trilium-linux-x64-server
-NODE_VERSION=18.18.2
+NODE_VERSION=24.13.0
 
 if [ "$1" != "DONTCOPY" ]
 then
@@ -9,7 +9,13 @@ then
 fi
 
 cd dist
-wget https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz
+
+if command -v proxychains &>/dev/null; then
+    proxychains wget https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz
+else
+    wget https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz
+fi
+
 tar xfJ node-v${NODE_VERSION}-linux-x64.tar.xz
 rm node-v${NODE_VERSION}-linux-x64.tar.xz
 cd ..
@@ -23,7 +29,7 @@ rm -r $PKG_DIR/node_modules/electron*
 rm -r $PKG_DIR/webpack*
 rm -r $PKG_DIR/electron.js
 
-cp -r bin/better-sqlite3/linux-server-better_sqlite3.node $PKG_DIR/node_modules/better-sqlite3/build/Release/better_sqlite3.node
+# cp -r bin/better-sqlite3/linux-server-better_sqlite3.node $PKG_DIR/node_modules/better-sqlite3/build/Release/better_sqlite3.node
 
 printf "#!/bin/sh\n./node/bin/node src/www" > $PKG_DIR/trilium.sh
 chmod 755 $PKG_DIR/trilium.sh

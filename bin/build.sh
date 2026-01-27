@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+nvm use 24.13.0
+echo "Node version:"
+node -v
+
 echo "Deleting existing builds"
 
 rm -rf dist/*
