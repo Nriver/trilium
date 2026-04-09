@@ -29,7 +29,7 @@ done
 cp webpack-* "$DIR"/      # here warning because there is no 'webpack-*', but webpack.config.js only
 
 # run in subshell (so we return to original dir)
-(cd $DIR && nvm use 24.13.0 && npm install --only=prod)
+(cd $DIR && nvm use 24.14.1 && npm install --only=prod)
 
 if [[ -d "$DIR"/node_modules ]]; then
 # cleanup of useless files in dependencies

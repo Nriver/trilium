@@ -1,5 +1,5 @@
 # !!! Don't try to build this Dockerfile directly, run it through bin/build-docker.sh script !!!
-FROM node:24.13.0-alpine
+FROM node:24.14.1-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
